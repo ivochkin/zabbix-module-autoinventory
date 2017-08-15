@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if [ which numfmt 2>/dev/null ]; then
+  numfmt=numfmt
+else
+  numfmt="python -B @ZBX_LIBEXEC_PREFIX@/mininumfmt.py"
+fi
+
+cpuinfo=`cat /proc/cpuinfo | grep '^model name' | sed 's/.*: //g' | uniq -c | xargs`
+meminfo=`cat /proc/meminfo | grep '^MemTotal' | awk '{print $2}' | $numfmt --to=iec-i --suffix=B --from-unit 1024`
+hddinfo=`for i in /sys/block/sd*; do echo $(cat $i/size | $numfmt --to=iec-i --suffix=B --from-unit 512) HDD ; done `
+
+echo $meminfo RAM, $hddinfo, $cpuinfo

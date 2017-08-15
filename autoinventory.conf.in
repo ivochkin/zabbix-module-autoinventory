@@ -1,0 +1,1 @@
+UserParameter=autoinventory.hwshort,@ZBX_BIN_PREFIX@/autoinventory-hw-short.sh
