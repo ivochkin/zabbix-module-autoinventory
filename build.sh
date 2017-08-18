@@ -17,10 +17,13 @@ sed_script="s#@ZBX_BIN_PREFIX@#$zbx_bin_prefix#g;s#@ZBX_LIBEXEC_PREFIX@#$zbx_lib
 
 sed "$sed_script" $src/autoinventory-hw-short.sh.in \
   > $stage/$zbx_bin_prefix/autoinventory-hw-short.sh
+sed "$sed_script" $src/autoinventory-type-short.sh.in \
+  > $stage/$zbx_bin_prefix/autoinventory-type-short.sh
 sed "$sed_script" $src/autoinventory.conf.in \
   > $stage/$zbx_agent_confd/autoinventory.conf
 
 chmod +x $stage/$zbx_bin_prefix/autoinventory-hw-short.sh
+chmod +x $stage/$zbx_bin_prefix/autoinventory-type-short.sh
 
 cp $src/mininumfmt.py $stage/$zbx_libexec_prefix/
 

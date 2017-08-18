@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+#
+# To march particular type, the host should match *all*
+# hardware requirements, i.e. consume less RAM *and* less CPUs
+# *and* less HDD space.
+#
+# E.g. a host with 8GiB RAM, 8CPUs and 100GiB storage is of the type "L",
+# because it does not fit into "M" size because it requires *at most* 4 CPUs.
+#
+#
+#  TYPE |   RAM   | CPU |    HDD
+# ------+---------+-----+---------
+#   XS  |   1 GiB |  1  | 300 GiB
+#   S   |   2 GiB |  2  | 300 GiB
+#   M   |   8 GiB |  4  | 300 GiB
+#   L   |  16 GiB |  8  | 500 GiB
+#   XL  |  32 GiB | 16  |   1 TiB
+#   XXL | 128 GiB | 24  |   8 TiB
+
+grades=(XS S M L XL XXL)
+ramgrades=(1 2 8 16 32 128)
+cpugrades=(1 2 4 8 16 24)
+hddgrades=(300 300 300 500 1024 8096)
+
+# Total memory in KiB
+memory=`cat /proc/meminfo | grep '^MemTotal' | awk '{print $2}'`
+# Number of CPUs
+ncpu=`cat /proc/cpuinfo | grep '^processor' | wc -l`
+# Total disks size (in 512 byte blocks)
+hdd=0
+for i in /sys/block/sd*; do
+  hdd=$(( $hdd + $(cat $i/size) ))
+done
+hdd=$(( $hdd / 2 ))
+
+grade() {
+	local res=0
+	local value="$1"
+	shift
+	for i in "$@"; do
+		if [ "$value" -le "$i" ]; then
+			echo $res
+			exit 0
+		fi
+		res=$(( $res + 1 ))
+	done
+	echo $res
+}
+
+max() {
+ local m="$1"
+ for i in "$@"; do
+	 [ "$i" -gt "$m" ] && m="$i"
+ done
+ echo "$m"
+}
+
+GB=$((1024 * 1024))
+cvt_ramgrades=$(for i in ${ramgrades[*]}; do echo $(( $i * $GB )); done)
+cvt_cpugrades=${cpugrades[*]}
+cvt_hddgrades=$(for i in ${hddgrades[*]}; do echo $(( $i * $GB )); done)
+
+r=$(grade $memory $cvt_ramgrades)
+c=$(grade $ncpu $cvt_cpugrades)
+h=$(grade $hdd $cvt_hddgrades)
+
+echo ${grades[$(max $r $c $h)]}
