@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ which numfmt 2>/dev/null ]; then
+if which numfmt &>/dev/null ; then
   numfmt=numfmt
 else
   numfmt="python -B @ZBX_LIBEXEC_PREFIX@/mininumfmt.py"
