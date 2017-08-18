@@ -9,6 +9,9 @@ zbx_bin_prefix=/etc/zabbix/extensions/scripts
 zbx_libexec_prefix=$libexec_prefix/zabbix/extensions/autoinventory
 zbx_agent_confd=/etc/zabbix/zabbix_agentd.d
 
+# Script arguments
+pkgtype="$1" # rpm/deb are allowed
+
 mkdir -p $stage/$zbx_bin_prefix
 mkdir -p $stage/$zbx_libexec_prefix
 mkdir -p $stage/$zbx_agent_confd
@@ -29,7 +32,7 @@ cp $src/mininumfmt.py $stage/$zbx_libexec_prefix/
 
 fpm \
   --input-type dir \
-  --output-type rpm \
+  --output-type $pkgtype \
   --chdir $stage \
   --name zabbix-module-autoinventory \
   --version $(cat $src/version) \
