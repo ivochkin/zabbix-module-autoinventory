@@ -36,4 +36,4 @@ for line in sys.stdin:
                 value = value / mult
                 suffix = suff
                 break
-        print("{0:.2f}".format(value) + suffix + args.suffix)
+        print("{0:.1f}".format(value).rstrip('0').rstrip('.') + suffix + args.suffix)
