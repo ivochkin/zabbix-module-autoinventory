@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+niface=$1
+i=0
+
+for dev in /sys/class/net/*; do
+  # Skip loopback interfaces,
+  # 772 is a constant from include/uapi/linux/if_arp.h
+  if [ $(cat $dev/type) != 772 ]; then
+    if [ $i = $niface ]; then
+      cat $dev/address
+      exit 0
+    fi
+    let i+=1
+  fi
+done

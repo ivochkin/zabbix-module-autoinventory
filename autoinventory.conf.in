@@ -1,2 +1,4 @@
 UserParameter=autoinventory.hwshort,@ZBX_BIN_PREFIX@/autoinventory-hw-short.sh
 UserParameter=autoinventory.typeshort,@ZBX_BIN_PREFIX@/autoinventory-type-short.sh
+UserParameter=autoinventory.macaddra,@ZBX_BIN_PREFIX@/autoinventory-macaddr.sh 0
+UserParameter=autoinventory.macaddrb,@ZBX_BIN_PREFIX@/autoinventory-macaddr.sh 1
